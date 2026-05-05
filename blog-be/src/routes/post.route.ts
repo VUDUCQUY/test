@@ -16,7 +16,6 @@ const postRepository = new PrismaPostRepository(prisma);
 const postService = new PostService(postRepository);
 const postController = new PostController(postService);
 
-postRouter.use(passportAuthenticateJwt);
 
 postRouter.post(
   '',
@@ -47,6 +46,7 @@ postRouter.get(
 
 postRouter.put(
   '/:postId',
+  passportAuthenticateJwt,
   uploadImage.fields([
     { name: 'thumbnail', maxCount: 1 },
     { name: 'images', maxCount: 10 },
@@ -55,18 +55,20 @@ postRouter.put(
   asyncHandler(postController.updatePost.bind(postController)),
 );
 
-postRouter.delete('/:postId', asyncHandler(postController.deletePost.bind(postController)));
+postRouter.delete('/:postId', passportAuthenticateJwt, asyncHandler(postController.deletePost.bind(postController)));
 
 postRouter.patch(
   '/:postId/draft',
+  passportAuthenticateJwt,
 
   asyncHandler(postController.saveDraft.bind(postController)),
 );
 
-postRouter.patch('/:postId/publish', asyncHandler(postController.publishPost.bind(postController)));
+postRouter.patch('/:postId/publish', passportAuthenticateJwt, asyncHandler(postController.publishPost.bind(postController)));
 
 postRouter.get(
   '/draft',
+  passportAuthenticateJwt,
 
   asyncHandler(postController.getPostDraftByUserId.bind(postController)),
 );
@@ -78,9 +80,9 @@ postRouter.get(
 
 postRouter.get('/hot', asyncHandler(postController.getHotsPost.bind(postController)));
 
-postRouter.get('/:post_id', asyncHandler(postController.getPostById.bind(postController)));
 postRouter.post(
   '/:postId/tags',
+  passportAuthenticateJwt,
   authorize('ADMIN', 'USER'),
   validateDto(AttachTagsDto),
   asyncHandler(postController.attachTagsToPost.bind(postController)),
@@ -88,6 +90,7 @@ postRouter.post(
 
 postRouter.delete(
   '/:postId/tags/:tagId',
+  passportAuthenticateJwt,
   authorize('ADMIN', 'USER'),
   asyncHandler(postController.detachTagFromPost.bind(postController)),
 );

@@ -62,7 +62,7 @@ export class PrismaPostRepository implements IPostRepository {
   }
 
   async findPostById(postId: string): Promise<Post | null> {
-    return await this.prisma.post.findUnique({
+    return await this.prisma.post.findFirst({
       where: {
         id: postId,
         isDeleted: false,
@@ -70,6 +70,7 @@ export class PrismaPostRepository implements IPostRepository {
       },
     });
   }
+
   async findAllPost(page: number, limit: number): Promise<Post[]> {
     return await this.prisma.post.findMany({
       where: {
@@ -208,10 +209,12 @@ export class PrismaPostRepository implements IPostRepository {
     return posts;
   }
 
-  async findCategoryById(categoryId: string): Promise<Category> {
-    return await this.prisma.post.findMany({
+  async findCategoryById(categoryId: string): Promise<Category | null> {
+    return await this.prisma.category.findFirst({
       where: {
-        categoryId,
+        id: categoryId,
+        isDeleted: false,
+        isActive: true,
       },
     });
   }
@@ -264,7 +267,7 @@ export class PrismaPostRepository implements IPostRepository {
   }
 
   async findTagsByPostId(postId: string): Promise<string[]> {
-    return await this.prisma.post.findUnique({
+    const post = await this.prisma.post.findFirst({
       where: {
         id: postId,
       },
@@ -276,24 +279,36 @@ export class PrismaPostRepository implements IPostRepository {
         },
       },
     });
+
+    const tags = (post?.tags ?? []) as Array<{
+      isDeleted: boolean;
+      isActive: boolean;
+      tag: {
+        name: string;
+      } | null;
+    }>;
+
+    return tags
+      .filter((item) => item.tag !== null && !item.isDeleted && item.isActive)
+      .map((item) => item.tag!.name);
   }
 
   async findPostByLikeCount(page: number, limit: number): Promise<Post[]> {
     const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate()-30);
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
     return await this.prisma.post.findMany({
       where: {
         isDraft: false,
         isDeleted: false,
         isActive: true,
-        createdAt:{
+        createdAt: {
           gte: thirtyDaysAgo,
-        }
+        },
       },
       orderBy: {
-        likeCount: 'desc'
+        likeCount: 'desc',
       },
-      skip :(page-1) * limit,
+      skip: (page - 1) * limit,
       take: limit,
     });
   }

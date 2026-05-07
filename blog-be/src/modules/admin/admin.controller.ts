@@ -7,15 +7,7 @@ export class AdminController {
   constructor(private readonly adminService: AdminService) {}
   async addUser(req: Request, res: Response, _next: NextFunction) {
     const dto = req.body as AddUserDto;
-    const userID = (req as any).user.id;
-    const result = await this.adminService.addUserService(dto);
-
-    if (!userID) {
-      return res.status(HTTPSTATUS.UNAUTHORIZED).json({
-        message: 'Missing authenticated user',
-      });
-    }
-
+    const result = await this.adminService.addUser(dto);
     return res.status(201).json({
       message: 'Add new user successfully',
       data: result,

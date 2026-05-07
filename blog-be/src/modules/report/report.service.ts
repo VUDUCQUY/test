@@ -15,7 +15,7 @@ export class ReportService {
       if (post?.userId === userId) {
         throw new BadRequestException('Cannot report your own post');
       }
-      const report = await this.reportRepository.findReportByPostAndUserID(data.postId, userId);
+      const report = await this.reportRepository.findReportByPostAndUserId(data.postId, userId);
       if (data.postId === report?.postId && userId === report?.userId) {
         throw new BadRequestException('You have reported this post');
       }
@@ -51,15 +51,14 @@ export class ReportService {
         throw new NotFoundException('Report not found');
       }
       const isOwner = report.userId === user.id;
-      const isAdmin = user.role === 'ADMIN';
 
-      if (!isOwner && !isAdmin) {
+      if (!isOwner) {
         throw new BadRequestException('You do not have permission to delete this report');
       }
-      if (report.status !== 'PENDING') {
+      if (report.status !== ReportStatus.PENDING) {
         throw new BadRequestException('Cannot delete this report');
       }
-      return await this.reportRepository.deleteReport(reportId, user.id);
+      return await this.reportRepository.softdeleteReport(reportId, user.id);
     } catch (error) {
       throw error;
     }

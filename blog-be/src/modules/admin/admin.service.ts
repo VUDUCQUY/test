@@ -6,7 +6,7 @@ import { User } from '@prisma/client';
 
 export class AdminService {
   constructor(private readonly adminRepository: IAdminRepository) {}
-  async addUserService(data: AddUserDto) {
+  async addUser(data: AddUserDto) {
     try {
       const { name, email, password, role } = data;
       const existingUser = await this.adminRepository.findUserByEmail(email);

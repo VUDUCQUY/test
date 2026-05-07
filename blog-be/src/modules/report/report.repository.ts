@@ -6,13 +6,13 @@ export interface IReportRepository {
 
   findPostById(postId: string): Promise<Post | null>;
 
-  findReportByPostAndUserID(postId: string, userId: string): Promise<Report | null>;
+  findReportByPostAndUserId(postId: string, userId: string): Promise<Report | null>;
 
   udateReportStatus(data: UpdateReportStatusDto): Promise<Report>;
 
   findReportById(reportId: string): Promise<Report | null>;
 
-  deleteReport(reportId: string, userId: string): Promise<Report>;
+  softdeleteReport(reportId: string, userId: string): Promise<Report>;
 
   findReportByUserId(userId: string, page: number, limit: number): Promise<Report[]>;
 

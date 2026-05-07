@@ -23,7 +23,7 @@ const reportController = new ReportController(reportService);
 reportRouter.use(passportAuthenticateJwt);
 
 reportRouter.post(
-  '',
+  '/create',
   validateDto(ReportDto),
   asyncHandler(reportController.createReport.bind(reportController)),
 );
@@ -37,7 +37,6 @@ reportRouter.patch(
 
 reportRouter.patch(
   '/:reportId',
-  authorize('ADMIN', 'USER'),
   asyncHandler(reportController.softdelete.bind(reportController)),
 );
 

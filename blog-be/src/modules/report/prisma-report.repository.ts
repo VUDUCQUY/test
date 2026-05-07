@@ -10,7 +10,7 @@ export class PrismaReportRepository implements IReportRepository {
         postId: data.postId,
         userId: userId,
         reason: data.reason,
-        status: 'PENDING',
+        status: ReportStatus.PENDING,
         createdBy: userId,
         updatedBy: userId,
       },
@@ -25,7 +25,7 @@ export class PrismaReportRepository implements IReportRepository {
     });
   }
 
-  async findReportByPostAndUserID(postId: string, userId: string): Promise<Report | null> {
+  async findReportByPostAndUserId(postId: string, userId: string): Promise<Report | null> {
     return await this.prisma.report.findFirst({
       where: {
         postId: postId,
@@ -53,7 +53,7 @@ export class PrismaReportRepository implements IReportRepository {
     });
   }
 
-  async deleteReport(reportId: string, userId: string): Promise<Report> {
+  async softdeleteReport(reportId: string, userId: string): Promise<Report> {
     return await this.prisma.report.update({
       where: {
         id: reportId,

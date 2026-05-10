@@ -6,7 +6,7 @@ import { UpdatePostDto } from './post.dto';
 import { readerPostArgs, ReaderPostFilter, ReaderPostItem } from '@/types/post-reader.type';
 
 export class PrismaPostRepository implements IPostRepository {
-  constructor(private readonly prisma: PrismaClient) {}
+  constructor(private readonly prisma: PrismaClient) { }
 
   async findBySlug(slug: string): Promise<Post | null> {
     return await this.prisma.post.findUnique({
@@ -61,16 +61,17 @@ export class PrismaPostRepository implements IPostRepository {
     });
   }
 
-  async findPostById(postId: string): Promise<Post | null> {
+  async findPostById(postId: string): Promise<any | null> {
     return await this.prisma.post.findUnique({
       where: {
         id: postId,
         isDeleted: false,
         isActive: true,
       },
+      ...readerPostArgs,
     });
   }
-  async findAllPost(page: number, limit: number): Promise<Post[]> {
+  async findAllPost(page: number, limit: number): Promise<any[]> {
     return await this.prisma.post.findMany({
       where: {
         isDeleted: false,
@@ -82,10 +83,11 @@ export class PrismaPostRepository implements IPostRepository {
       orderBy: {
         createdAt: 'desc',
       },
+      ...readerPostArgs,
     });
   }
 
-  async findPostByUserId(page: number, limit: number, userId: string): Promise<Post[]> {
+  async findPostByUserId(page: number, limit: number, userId: string): Promise<any[]> {
     return await this.prisma.post.findMany({
       where: {
         userId: userId,
@@ -97,6 +99,7 @@ export class PrismaPostRepository implements IPostRepository {
       },
       skip: (page - 1) * limit,
       take: limit,
+      ...readerPostArgs,
     });
   }
 
@@ -292,20 +295,20 @@ export class PrismaPostRepository implements IPostRepository {
 
   async findPostByLikeCount(page: number, limit: number): Promise<Post[]> {
     const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate()-30);
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
     return await this.prisma.post.findMany({
       where: {
         isDraft: false,
         isDeleted: false,
         isActive: true,
-        createdAt:{
+        createdAt: {
           gte: thirtyDaysAgo,
         }
       },
       orderBy: {
         likeCount: 'desc'
       },
-      skip :(page-1) * limit,
+      skip: (page - 1) * limit,
       take: limit,
     });
   }

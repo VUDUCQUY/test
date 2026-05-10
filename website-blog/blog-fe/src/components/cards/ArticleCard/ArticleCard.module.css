@@ -82,3 +82,30 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+/* AUTHOR */
+.author {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  margin-top: auto;
+  padding-top: var(--spacing-xs);
+}
+
+.avatarWrapper {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+}
+
+.avatar {
+  object-fit: cover;
+}
+
+.authorName {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text);
+}

@@ -12,7 +12,7 @@ import { BadRequestException } from '@/common/utils/app-error';
 import { Env } from '@/config/env.config';
 
 export class PostService {
-  constructor(private readonly postRepository: IPostRepository) {}
+  constructor(private readonly postRepository: IPostRepository) { }
 
   async createPost(
     data: CreatePostDto,

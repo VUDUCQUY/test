@@ -101,4 +101,11 @@ postRouter.get(
   asyncHandler(postController.getTagsByPostId.bind(postController)),
 );
 
+postRouter.post(
+  '/upload',
+  passportAuthenticateJwt,
+  uploadImage.single('image'),
+  asyncHandler(postController.uploadImage.bind(postController)),
+);
+
 export default postRouter;

@@ -16,7 +16,8 @@ export default function EditPostPage() {
   const { mutate: updatePost, isPending: isUpdating } = useUpdatePost(id);
 
   const handleSubmit = (formData: FormData) => {
-    updatePost(formData, {
+    const shouldPublish = formData.get('isDraft') === 'false';
+    updatePost({ formData, shouldPublish }, {
       onSuccess: () => {
         router.push('/posts/manage');
       },

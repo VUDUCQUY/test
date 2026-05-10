@@ -6,9 +6,9 @@ import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image';
 import Link from '@tiptap/extension-link';
 import Placeholder from '@tiptap/extension-placeholder';
-import { 
-  Bold, Italic, List, ListOrdered, Quote, 
-  Heading1, Heading2, Image as ImageIcon, 
+import {
+  Bold, Italic, List, ListOrdered, Quote,
+  Heading1, Heading2, Image as ImageIcon,
   Link as LinkIcon, Undo, Redo, Code
 } from 'lucide-react';
 import styles from './PostEditor.module.css';
@@ -48,10 +48,23 @@ export const PostEditor: React.FC<PostEditorProps> = ({ content, onChange, place
   });
 
   const addImage = useCallback(() => {
-    const url = window.prompt('Enter the URL of the image:');
-    if (url && editor) {
-      editor.chain().focus().setImage({ src: url }).run();
-    }
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+
+    input.onchange = async () => {
+      const file = input.files?.[0];
+      if (file && editor) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const src = e.target?.result as string;
+          if (src) editor.chain().focus().setImage({ src }).run();
+        };
+        reader.readAsDataURL(file);
+      }
+    };
+
+    input.click();
   }, [editor]);
 
   const setLink = useCallback(() => {
@@ -70,16 +83,16 @@ export const PostEditor: React.FC<PostEditorProps> = ({ content, onChange, place
 
   if (!editor) return null;
 
-  const ToolbarBtn = ({ 
-    onClick, 
-    active = false, 
-    disabled = false, 
-    children, 
-    title 
-  }: { 
-    onClick: () => void; 
-    active?: boolean; 
-    disabled?: boolean; 
+  const ToolbarBtn = ({
+    onClick,
+    active = false,
+    disabled = false,
+    children,
+    title
+  }: {
+    onClick: () => void;
+    active?: boolean;
+    disabled?: boolean;
     children: React.ReactNode;
     title: string;
   }) => (

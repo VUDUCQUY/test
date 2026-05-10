@@ -1,7 +1,24 @@
 @reference "../../../app/globals.css";
 
 .editor {
-  @apply min-h-[400px] outline-none p-6 prose prose-slate max-w-none dark:prose-invert;
+  @apply min-h-[400px] outline-none p-6 prose max-w-none;
+  /* Ép màu của tất cả thành phần trong editor theo màu chữ mặc định (giống y hệt thẻ Title) */
+  --tw-prose-body: var(--color-foreground);
+  --tw-prose-headings: var(--color-foreground);
+  --tw-prose-lead: var(--color-foreground);
+  --tw-prose-links: var(--color-primary);
+  --tw-prose-bold: var(--color-foreground);
+  --tw-prose-counters: var(--color-foreground);
+  --tw-prose-bullets: var(--color-foreground);
+  --tw-prose-hr: var(--color-card-border);
+  --tw-prose-quotes: var(--color-foreground);
+  --tw-prose-quote-borders: var(--color-card-border);
+  --tw-prose-captions: var(--color-muted-foreground);
+  --tw-prose-code: var(--color-foreground);
+  --tw-prose-pre-code: var(--color-foreground);
+  --tw-prose-pre-bg: var(--color-card-bg);
+  --tw-prose-th-borders: var(--color-card-border);
+  --tw-prose-td-borders: var(--color-card-border);
 }
 
 .toolbar {
@@ -22,6 +39,17 @@
 
 :global(.ProseMirror) {
   outline: none;
+  color: var(--color-foreground) !important;
+}
+
+:global(.ProseMirror) p,
+:global(.ProseMirror) h1,
+:global(.ProseMirror) h2,
+:global(.ProseMirror) h3,
+:global(.ProseMirror) h4,
+:global(.ProseMirror) li,
+:global(.ProseMirror) blockquote {
+  color: var(--color-foreground) !important;
 }
 
 :global(.ProseMirror p.is-editor-empty:first-child::before) {

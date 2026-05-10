@@ -59,7 +59,7 @@ export const PostForm: React.FC<PostFormProps> = ({ initialData, onSubmit, isLoa
 
   const handleSubmit = (e: React.FormEvent, status: 'draft' | 'published') => {
     e.preventDefault();
-    
+
     // Frontend Validation
     if (!title.trim()) {
       alert('Article title is required!');
@@ -94,6 +94,7 @@ export const PostForm: React.FC<PostFormProps> = ({ initialData, onSubmit, isLoa
     onSubmit(formData);
   };
 
+
   return (
     <form className="max-w-5xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="flex items-center justify-between sticky top-0 z-20 py-4 bg-background/80 backdrop-blur-md border-b border-card-border mb-8">
@@ -106,9 +107,9 @@ export const PostForm: React.FC<PostFormProps> = ({ initialData, onSubmit, isLoa
           </h1>
         </div>
         <div className="flex items-center gap-3">
-          <Button 
-            type="button" 
-            variant="outline" 
+          <Button
+            type="button"
+            variant="outline"
             onClick={(e) => handleSubmit(e, 'draft')}
             isLoading={isLoading && isDraft}
             disabled={isLoading}
@@ -117,9 +118,9 @@ export const PostForm: React.FC<PostFormProps> = ({ initialData, onSubmit, isLoa
             <Save size={18} />
             Save Draft
           </Button>
-          <Button 
-            type="button" 
-            variant="primary" 
+          <Button
+            type="button"
+            variant="primary"
             onClick={(e) => handleSubmit(e, 'published')}
             isLoading={isLoading && !isDraft}
             disabled={isLoading}
@@ -170,7 +171,7 @@ export const PostForm: React.FC<PostFormProps> = ({ initialData, onSubmit, isLoa
               </h3>
             </div>
             <CardContent className="p-4">
-              <div 
+              <div
                 onClick={() => fileInputRef.current?.click()}
                 className="relative aspect-video rounded-xl bg-card-bg/50 border-2 border-dashed border-card-border hover:border-primary/50 transition-all cursor-pointer overflow-hidden group"
               >
@@ -195,12 +196,12 @@ export const PostForm: React.FC<PostFormProps> = ({ initialData, onSubmit, isLoa
                   </div>
                 )}
               </div>
-              <input 
-                type="file" 
-                ref={fileInputRef} 
-                onChange={handleThumbnailChange} 
-                accept="image/*" 
-                className="hidden" 
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleThumbnailChange}
+                accept="image/*"
+                className="hidden"
               />
               <p className="mt-3 text-[10px] text-muted-foreground leading-relaxed italic">
                 Best size: 1200x630px. Supports JPG, PNG, WEBP.
@@ -234,8 +235,8 @@ export const PostForm: React.FC<PostFormProps> = ({ initialData, onSubmit, isLoa
                         onClick={() => setCategoryId(cat.id)}
                         className={twMerge(
                           "p-3 rounded-xl border text-[10px] font-bold uppercase tracking-wider transition-all",
-                          categoryId === cat.id 
-                            ? "bg-primary/10 border-primary text-primary" 
+                          categoryId === cat.id
+                            ? "bg-primary/10 border-primary text-primary"
                             : "bg-card-bg/50 border-card-border text-muted-foreground hover:border-primary/50"
                         )}
                       >
@@ -256,13 +257,13 @@ export const PostForm: React.FC<PostFormProps> = ({ initialData, onSubmit, isLoa
                 <div className="space-y-3">
                   <div className="flex flex-wrap gap-2">
                     {tags.map((tag) => (
-                      <span 
-                        key={tag} 
+                      <span
+                        key={tag}
                         className="px-2 py-1 bg-primary/10 text-primary border border-primary/20 rounded-lg text-[9px] font-bold uppercase flex items-center gap-1 group"
                       >
                         {tag}
-                        <button 
-                          type="button" 
+                        <button
+                          type="button"
                           onClick={() => removeTag(tag)}
                           className="hover:text-destructive transition-colors"
                         >

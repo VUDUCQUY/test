@@ -29,13 +29,33 @@ export function useDeletePost() {
 export function useUpdatePost(id: string) {
   const queryClient = useQueryClient();
 
-  return useMutation<void, Error, FormData>({
-    mutationFn: async (formData) => {
+  return useMutation<void, Error, { formData: FormData; shouldPublish?: boolean }>({
+    mutationFn: async ({ formData, shouldPublish = false }) => {
+      const tagIdsJson = formData.get('tagIds') as string;
+      
       // Backend UpdatePostDto does NOT allow isDraft or tagIds
       formData.delete('isDraft');
       formData.delete('tagIds');
       
+      // Step 1: Update basic post info
       await apiClient.put(`/post/${id}`, formData);
+      
+      // Step 2: Update tags if they exist
+      if (tagIdsJson) {
+        try {
+          const tagIds = JSON.parse(tagIdsJson);
+          if (Array.isArray(tagIds)) {
+            await apiClient.post(`/post/${id}/tags`, { tagIds });
+          }
+        } catch (error) {
+          console.error('[useUpdatePost] Error updating tags:', error);
+        }
+      }
+      
+      // Step 3: Publish if requested
+      if (shouldPublish) {
+        await apiClient.patch(`/post/${id}/publish`, {});
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['posts'] });
@@ -49,7 +69,8 @@ export function usePublishPost() {
 
   return useMutation<void, Error, string>({
     mutationFn: async (id) => {
-      await apiClient.patch(`/post/${id}/publish`);
+      // Using the dedicated publish endpoint with an empty body
+      await apiClient.patch(`/post/${id}/publish`, {});
     },
     onSuccess: (_, id) => {
       queryClient.invalidateQueries({ queryKey: ['posts'] });

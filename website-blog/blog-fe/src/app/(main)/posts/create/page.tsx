@@ -10,7 +10,8 @@ export default function CreatePostPage() {
   const { mutate: createPost, isPending } = useCreatePost();
 
   const handleSubmit = (formData: FormData) => {
-    createPost(formData, {
+    const shouldPublish = formData.get('isDraft') === 'false';
+    createPost({ formData, shouldPublish }, {
       onSuccess: () => {
         router.push('/posts/manage');
       },

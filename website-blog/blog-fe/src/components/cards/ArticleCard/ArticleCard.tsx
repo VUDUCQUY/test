@@ -60,6 +60,20 @@ export const ArticleCard = ({ post }: ArticleCardProps) => {
 
           {/* Excerpt */}
           <p className={styles.excerpt}>{excerpt}</p>
+
+          {/* Author */}
+          <div className={styles.author}>
+            <div className={styles.avatarWrapper}>
+              <Image 
+                src={post.user?.avatar_url || "https://ui-avatars.com/api/?name=" + encodeURIComponent(post.user?.name || 'U')}
+                alt={post.user?.name || 'Author'}
+                width={24}
+                height={24}
+                className={styles.avatar}
+              />
+            </div>
+            <span className={styles.authorName}>{post.user?.name || 'Unknown'}</span>
+          </div>
         </div>
       </article>
     </Link>

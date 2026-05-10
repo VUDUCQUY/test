@@ -5,7 +5,7 @@ import { UpdatePostDto } from './post.dto';
 import { HTTPSTATUS } from '@/config/http.config';
 
 export class PostController {
-  constructor(private readonly postService: PostService) {}
+  constructor(private readonly postService: PostService) { }
 
   async createPost(req: Request, res: Response, _next: NextFunction) {
     const userId = (req as any).user.id;
@@ -125,7 +125,7 @@ export class PostController {
     });
   }
 
-  async getHotsPost(req: Request, res: Response, _next: NextFunction){
+  async getHotsPost(req: Request, res: Response, _next: NextFunction) {
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
     const posts = await this.postService.getHotsPost(page, limit);
@@ -218,6 +218,21 @@ export class PostController {
     res.status(200).json({
       message: 'Tags fetched successfully',
       data: tags,
+    });
+  }
+
+  async uploadImage(req: Request, res: Response) {
+    const file = req.file;
+    if (!file) {
+      return res.status(HTTPSTATUS.BAD_REQUEST).json({
+        message: 'No image file provided',
+      });
+    }
+
+    const uploadedImage = await this.postService.uploadImage(file);
+    res.status(200).json({
+      message: 'Image uploaded successfully',
+      data: uploadedImage,
     });
   }
 }

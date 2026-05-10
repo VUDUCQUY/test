@@ -45,8 +45,9 @@ export class AuthService {
 
       return await this.authRepository.updateLastLogin(user.id, new Date());
     } catch (error) {
+      console.error('🔥 LOGIN CRASH ERROR:', error);
       if (error instanceof UnauthorizedException) {
-        
+        throw error;
       }
 
       throw new InternalServerException('Failed to login');

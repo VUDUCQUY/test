@@ -61,24 +61,33 @@ export default function ManagePostsPage() {
                 { id: 'published', label: 'Published', count: allPosts?.filter(p => !p.isDraft).length },
                 { id: 'draft', label: 'Drafts', count: allPosts?.filter(p => p.isDraft).length }
               ].map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => setFilter(item.id as any)}
-                  className={twMerge(
-                    "flex items-center justify-between p-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-all",
-                    filter === item.id 
-                      ? "bg-primary text-white shadow-lg shadow-primary/20" 
-                      : "text-muted-foreground hover:bg-primary/10 hover:text-primary"
+                <div key={item.id} className="flex flex-col gap-1">
+                  <button
+                    onClick={() => setFilter(item.id as any)}
+                    className={twMerge(
+                      "flex items-center justify-between p-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-all",
+                      filter === item.id 
+                        ? "bg-primary text-white shadow-lg shadow-primary/20" 
+                        : "text-muted-foreground hover:bg-primary/10 hover:text-primary"
+                    )}
+                  >
+                    {item.label}
+                    <span className={twMerge(
+                      "px-2 py-0.5 rounded-md text-[10px]",
+                      filter === item.id ? "bg-white/20" : "bg-card-bg"
+                    )}>
+                      {item.count || 0}
+                    </span>
+                  </button>
+                  {item.id === 'draft' && (
+                    <Link 
+                      href="/posts/manage/drafts" 
+                      className="text-[10px] text-primary hover:underline px-3 font-bold uppercase tracking-wider flex items-center gap-1"
+                    >
+                      Manage Drafts →
+                    </Link>
                   )}
-                >
-                  {item.label}
-                  <span className={twMerge(
-                    "px-2 py-0.5 rounded-md text-[10px]",
-                    filter === item.id ? "bg-white/20" : "bg-card-bg"
-                  )}>
-                    {item.count || 0}
-                  </span>
-                </button>
+                </div>
               ))}
             </CardContent>
           </Card>

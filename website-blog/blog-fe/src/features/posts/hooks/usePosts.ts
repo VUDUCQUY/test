@@ -6,40 +6,34 @@ import { useAuthStore } from '@/features/auth/store/authStore';
 export function useCreatePost() {
   const queryClient = useQueryClient();
 
-  return useMutation<Post, Error, any>({
-    mutationFn: async (inputData) => {
-      let finalData: any;
-      let shouldPublish = false;
-
-      if (inputData instanceof FormData) {
-        shouldPublish = inputData.get('isDraft') === 'false';
-        inputData.delete('isDraft');
-        
-        if (!inputData.get('thumbnail')) {
-          const emptyBlob = new Blob([''], { type: 'image/png' });
-          inputData.set('thumbnail', emptyBlob, 'empty.png');
-        }
-        finalData = inputData;
-      } else {
-        shouldPublish = inputData.isDraft === false;
-        finalData = { ...inputData };
-        delete finalData.isDraft;
-      }
-
+  return useMutation({
+    mutationFn: async ({ formData, shouldPublish = false }: { formData: FormData; shouldPublish?: boolean }) => {
       try {
-        const { data } = await apiClient.post<{ message: string; data: Post }>('/post', finalData);
-        const createdPost = data.data;
+        console.log(`[useCreatePost] Creating draft...`);
 
-        // If user wanted to publish, call the publish endpoint after creation
-        if (shouldPublish && createdPost.id) {
-          console.log(`[useCreatePost] Publishing post ${createdPost.id}...`);
-          await apiClient.patch(`/post/${createdPost.id}/publish`);
+        // Step 1: Create the post
+        // Remove isDraft because the backend DTO doesn't allow it
+        formData.delete('isDraft');
+
+        const response = await apiClient.post<{ message: string; data: Post }>('/post', formData);
+        const createdPost = response.data.data;
+
+        console.log(`[useCreatePost] Draft created with ID:`, createdPost?.id);
+
+        // Step 2: If publishing, wait a tiny bit then call publish
+        if (shouldPublish && createdPost?.id) {
+          console.log(`[useCreatePost] Waiting for DB sync...`);
+          await new Promise(resolve => setTimeout(resolve, 500));
+
+          console.log(`[useCreatePost] Calling publish API...`);
+          await apiClient.patch(`/post/${createdPost.id}/publish`, {});
+          console.log(`[useCreatePost] Published successfully!`);
         }
 
         return createdPost;
       } catch (error: any) {
         if (error.response?.data) {
-          console.error('❌ BACKEND VALIDATION ERROR:', JSON.stringify(error.response.data, null, 2));
+          console.error('❌ BACKEND ERROR:', JSON.stringify(error.response.data, null, 2));
         }
         throw error;
       }
@@ -52,16 +46,16 @@ export function useCreatePost() {
 
 export function useMyPosts(status?: 'draft' | 'published') {
   const user = useAuthStore((state) => state.user);
-  
+
   return useQuery<Post[], Error>({
     queryKey: ['posts', 'my', user?.id, status],
     queryFn: async () => {
       if (!user?.id) return [];
-      
+
       // Using the generic user posts endpoint which is stable in the backend
       const { data } = await apiClient.get<{ data: Post[] }>(`/post/user/${user.id}`);
       const posts = data.data || [];
-      
+
       // Filter locally based on status as the backend endpoint doesn't support it
       if (status === 'draft') {
         return posts.filter(p => p.isDraft);
@@ -69,7 +63,7 @@ export function useMyPosts(status?: 'draft' | 'published') {
       if (status === 'published') {
         return posts.filter(p => !p.isDraft);
       }
-      
+
       return posts;
     },
     enabled: !!user?.id,

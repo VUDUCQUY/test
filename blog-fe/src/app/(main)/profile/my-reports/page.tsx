@@ -1,5 +1,7 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import React from 'react';
 import { useMyReports, useDeleteReport } from '@/features/posts/hooks/useReports';
 import { Button, Card, CardContent } from '@/components/ui';

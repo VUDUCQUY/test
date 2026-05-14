@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = 'force-dynamic';
+
 import { useSearchParams } from "next/navigation";
 import { useSearch } from "@/features/search/hooks/useSearch";
 import { PostSection } from "@/components/sections/PostSection/PostSection";

@@ -1,5 +1,7 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import React, { useState } from 'react';
 import { useMyPosts } from '@/features/posts/hooks/usePosts';
 import { useDeletePost } from '@/features/posts/hooks/usePostActions';

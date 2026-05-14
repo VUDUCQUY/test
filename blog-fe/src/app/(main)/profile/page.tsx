@@ -1,5 +1,7 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { useAuth } from '@/features/auth/hooks';
 import { Card, CardContent, CardHeader, Button, Input, Modal } from '@/components/ui';

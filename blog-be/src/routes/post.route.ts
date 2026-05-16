@@ -84,6 +84,7 @@ postRouter.get(
 
 postRouter.get(
   '/published',
+  passportAuthenticateJwt,
   asyncHandler(postController.getPostPublishedByUserId.bind(postController)),
 );
 
